@@ -1,10 +1,11 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <conio.h>   
-#include <cstdlib>   
-#include <ctime>     
-#include <windows.h> 
+#include <conio.h>
+#include <cstdlib>
+#include <ctime>
+#include <windows.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -33,33 +34,33 @@ void setColor(int color)
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 }
 
+
 // Function to display rulebook
 void displayRulebook()
 {
     system("cls"); // Clear screen
     setColor(14);  // Yellow color
-    cout << "======================== SNAKE GAME RULEBOOK ========================\n\n";
+    cout << "                                              ======================== SNAKE GAME RULEBOOK ========================\n\n\n";
     setColor(7); // White color
 
-    cout << "🐍 Objective:\n";
-    cout << "   - Eat the apples 🍎 to grow your snake and increase your score.\n";
-    cout << "   - Avoid crashing into the walls 🧱 or yourself!\n\n";
+    cout << "                                                🐍 Objective:\n\n";
+    cout << "                                                    - Eat the apples 🍎 to grow your snake and increase your score.\n";
+    cout << "                                                    - Avoid crashing into the walls 🧱 or yourself!\n\n\n";
 
-    cout << "🎮 Controls:\n"
-    ;
-    cout << "   - Move using Arrow Keys (⬆  ⬇  ⬅  ➡  ) or WASD.\n";
-    cout << "   - Press 'X' to quit the game at any time.\n\n";
+    cout << "                                                🎮 Controls:\n\n";
+    cout << "                                                    - Move using Arrow Keys (⬆️  ⬇️  ⬅️  ➡️  ) or WASD.\n";
+    cout << "                                                    - Press 'X' to quit the game at any time.\n\n\n";
 
-    cout << "⚡ Speed:\n";
-    cout << "   - The snake moves faster as you eat more apples.\n";
-    cout << "   - Every 3 apples, speed increases!\n\n";
+    cout << "                                                ⚡ Speed:\n\n";
+    cout << "                                                    - The snake moves faster as you eat more apples.\n";
+    cout << "                                                    - Every 3 apples, speed increases!\n\n\n";
 
-    cout << "🏆 Scoring:\n";
-    cout << "   - Each apple = +10 points.\n";
-    cout << "   - Your high score is saved automatically.\n\n";
+    cout << "                                                🏆 Scoring:\n\n";
+    cout << "                                                    - Each apple = +10 points.\n";
+    cout << "                                                    - Your high score is saved automatically.\n\n\n";
 
     setColor(11); // Cyan
-    cout << "Press any key to start the game...";
+    cout << "                                                    Press any key to start the game...";
 
     _getch();      // Wait for key press
     system("cls"); // Clear screen before starting
@@ -160,7 +161,7 @@ public:
                 }
                 else if (i == foodY && j == foodX + 1)
                 {
-                    cout << "🍎"; 
+                    cout << "🍎";
                 }
                 else
                 {
@@ -198,26 +199,26 @@ public:
             int key = _getch(); // Getting the pressed key
 
             if (key == 224) // special key code for arrow keys
-            {                  
-                key = _getch(); // Getting the actual arrow key 
+            {
+                key = _getch(); // Getting the actual arrow key
                 switch (key)
                 {
                 case 75:
                     if (dir != RIGHT && dir != STOP)
                         dir = LEFT;
-                    break; 
+                    break;
                 case 77:
                     if (dir != LEFT)
                         dir = RIGHT;
-                    break; 
+                    break;
                 case 72:
                     if (dir != DOWN)
                         dir = UP;
-                    break; 
+                    break;
                 case 80:
                     if (dir != UP)
                         dir = DOWN;
-                    break; 
+                    break;
                 }
             }
             else
@@ -243,12 +244,30 @@ public:
                 case 'x':
                     gameOver = true;
                     break; // Game over
+                case 'A':
+                    if (dir != RIGHT && dir != STOP)
+                        dir = LEFT;
+                    break;
+                case 'D':
+                    if (dir != LEFT)
+                        dir = RIGHT;
+                    break;
+                case 'W':
+                    if (dir != DOWN)
+                        dir = UP;
+                    break;
+                case 'S':
+                    if (dir != UP)
+                        dir = DOWN;
+                    break;
+                case 'X':
+                    gameOver = true;
+                    break; // Game over
                 }
             }
         }
     }
 
-    
     void logic()
     {
         // Store the previous head position
@@ -291,16 +310,15 @@ public:
             }
         }
 
-        //Shift every part to the previous one's position to move body
-        if (!snakeBody.empty())
-        {
-            for (size_t i = snakeBody.size() - 1; i > 0; --i)
-            {
-                snakeBody[i] = snakeBody[i - 1];
-            }
-            snakeBody[0] = {prevX, prevY}; // Place previous head position as first body part
-        }
+        // Shift every part to the previous one's position to move body
+            // for (size_t i = snakeBody.size() - 1 ; i > 0; --i)
+            // {
+            //     snakeBody[i] = snakeBody[i - 1];
+            // }
+            // snakeBody[0] = {prevX, prevY}; // Place previous head position as first body part
 
+        rotate(snakeBody.rbegin(),snakeBody.rbegin()+1,snakeBody.rend());
+        snakeBody[0] = {prevX , prevY};
         // Check if food is eaten
         if (x == foodX && y == foodY)
         {
@@ -368,16 +386,19 @@ int main()
 {
     SetConsoleOutputCP(CP_UTF8);
     displayRulebook();
+    
     srand(static_cast<unsigned>(time(0))); // Seed random number generator
     while (1)
     {
         SnakeGame game(25, 25);
         game.run();
-
         cout << "\n Press any key to Play Again  or Press X to exit the game.\n";
         char ch = _getch();
         if (ch == 'x' || ch == 'X')
             break;
+        else{
+            speed = 275;
+        }
         system("cls");
     }
     return 0;
